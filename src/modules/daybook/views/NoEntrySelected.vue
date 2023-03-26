@@ -3,7 +3,9 @@
         <h1 class="align-self-center">Nothing has been selected</h1>
     </div>
 
-    <Fab />
+    <Fab
+        @on:click="createNewEntry"
+    />
 </template>
 
 <script>
@@ -12,6 +14,11 @@ import { defineAsyncComponent } from 'vue';
 export default {
     components: {
         Fab: defineAsyncComponent(() => import('../components/FabComponent.vue'))
+    },
+    methods: {
+        createNewEntry() {
+            this.$router.push({ name: 'entry', params: { id: 'new'} })
+        }
     }
 }
 </script>
