@@ -1,42 +1,46 @@
 <template>
-    <div class="entry-title d-flex justify-content-between p-2">
-        <div>
-            <span class="text-success fs-3 fw-bold">{{ day }}</span>
-            <span class="mx-1 fs-3">{{ month }}</span>
-            <span class="mx-2 fs-4 fw-light">{{ yearDay }}</span>
+
+    <template v-if="entry">
+        <div class="entry-title d-flex justify-content-between p-2">
+            <div>
+                <span class="text-success fs-3 fw-bold">{{ day }}</span>
+                <span class="mx-1 fs-3">{{ month }}</span>
+                <span class="mx-2 fs-4 fw-light">{{ yearDay }}</span>
+            </div>
+            
+            <div>
+                <input type="file" @change="onSelectedImage" accept="image/*" ref="imageSelector" v-show="false">
+                <button class="btn btn-danger mx-2" @click="onDeleteEntry" v-if="entry.id">
+                    Delete
+                    <i class="fa fa-trash-alt">
+                    </i>
+                </button>
+                <button class="btn btn-primary" @click="onSelectImage">
+                    Upload
+                    <i class="fa fa-upload">
+                    </i>
+                </button>
+            </div>
         </div>
-
-        <div>
-
-            <input type="file" @change="onSelectedImage" accept="image/*" ref="imageSelector" v-show="false">
-            <button class="btn btn-danger mx-2" @click="onDeleteEntry" v-if="entry.id">
-                Delete
-                <i class="fa fa-trash-alt">
-                </i>
-            </button>
-            <button class="btn btn-primary" @click="onSelectImage">
-                Upload
-                <i class="fa fa-upload">
-                </i>
-            </button>
+        
+        <hr>
+        
+        <div class="d-flex flex-column px-3 h-75">
+            <textarea placeholder="What happened today?" v-model="entry.text"></textarea>
         </div>
-    </div>
-
-    <hr>
-
-    <div class="d-flex flex-column px-3 h-75">
-        <textarea placeholder="What happened today?" v-model="entry.text"></textarea>
-    </div>
+        
+        <img
+            v-if="localImage"
+            :src="localImage"
+            alt="entry-picture"
+            class="img-thumbnail"
+        >
+        <img v-if="entry.picture && !localImage" :src="entry.picture" alt="entry-picture" class="img-thumbnail">
+    
+    </template>
 
     <Fab icon="fa-save" @on:click="saveEntry"></Fab>
-
-    <img
-        v-if="localImage"
-        :src="localImage"
-        alt="entry-picture"
-        class="img-thumbnail"
-    >
-    <img v-if="entry.picture && !localImage" :src="entry.picture" alt="entry-picture" class="img-thumbnail">
+    
 </template>
 
 <script>
@@ -48,9 +52,10 @@ import getDayMonthYear from "../helpers/getDayMonthYear";
 import uploadImage from '@/modules/daybook/helpers/uploadImage';
 
 export default {
+    name: 'EntryView',
     props: {
         id: {
-            tyoe: String,
+            type: String,
             required: true
         }
     },
@@ -98,7 +103,7 @@ export default {
         },
         async saveEntry() {
 
-            new Swal({
+            Swal.fire({
                 title: 'Waiting pls...',
                 allowOutsideClick: false
             })
@@ -128,7 +133,7 @@ export default {
             })
 
             if (isConfirmed) {
-                new Swal({
+                Swal.fire({
                     title: 'Waiting pls...',
                     allowOutsideClick: false
                 })
